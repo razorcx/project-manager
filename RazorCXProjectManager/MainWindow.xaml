@@ -1,0 +1,131 @@
+﻿<Window x:Class="RazorCXProjectManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RazorCXProjectManager"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+        xmlns:viewModels="clr-namespace:RazorCXProjectManager.ViewModels"
+        xmlns:common="clr-namespace:RazorCXProjectManager.Common"
+        mc:Ignorable="d"
+        Title="Project Manager" Width="1000" Topmost="False" Icon="Resources/RazorCX-Logo-96x96.png">
+	<Window.Resources>
+	</Window.Resources>
+	<Grid>
+		<StackPanel Orientation="Horizontal">
+			<StackPanel.DataContext >
+				<viewModels:MainWindowViewModel/>
+			</StackPanel.DataContext>
+			<Image HorizontalAlignment="Left" Margin="10,10,20,0" VerticalAlignment="Top" Width="132" Source="Resources/Logo.png"/>
+			<StackPanel Orientation="Horizontal" Margin="10,12,0,10">
+				<Label Content="Model Name" Margin="0,0,10,0"></Label>
+				<TextBlock Text="{Binding ModelInfo.ModelName}" Padding="5" MinWidth="100" Background="#eeeeee" VerticalAlignment="Top"></TextBlock>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="10,12,0,10">
+				<Label Content="Name" Margin="0,0,10,0"></Label>
+				<TextBlock Text="{Binding ProjectInfo.Name}" Padding="5" MinWidth="100" Background="#eeeeee" VerticalAlignment="Top"></TextBlock>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="10,12,0,10">
+				<Label Content="Number" Margin="0,0,10,0"></Label>
+				<TextBlock Text="{Binding ProjectInfo.ProjectNumber}" Padding="5" MinWidth="30" Background="#eeeeee"  VerticalAlignment="Top"></TextBlock>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="10,12,0,10">
+				<Label Content="Builder" Margin="0,0,10,0"></Label>
+				<TextBlock Text="{Binding ProjectInfo.Builder}" Padding="5" MinWidth="100" Background="#eeeeee" VerticalAlignment="Top"></TextBlock>
+			</StackPanel>
+		</StackPanel>
+		<TabControl Margin="10,55,10,10">
+			<TabItem Header="Main Beams">
+				<TabItem.DataContext >
+					<viewModels:MainBeamsViewModel/>
+				</TabItem.DataContext>
+				<Grid>
+					<Label Content="Main Beams" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+					<DataGrid Name="DataGridMainBeams" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" ItemsSource="{Binding BeamStateViews}" SelectedItem="{Binding SelectedBeamStateView}" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" HorizontalAlignment="Left" Margin="10,34,10,10" VerticalAlignment="Top" Width="Auto" FontSize="10" Opacity="0.8" RowHeight="22">
+						<i:Interaction.Behaviors>
+							<common:DataGridSelectedItemsBlendBehavior
+							SelectedItems="{Binding SelectedItems}" />
+						</i:Interaction.Behaviors>
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="CellEditEnding">
+								<ei:CallMethodAction TargetObject="{Binding}" MethodName="CellEditEnding"/>
+							</i:EventTrigger>
+							<i:EventTrigger EventName="SelectionChanged">
+								<ei:CallMethodAction TargetObject="{Binding}" MethodName="SelectMembersInModel"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</DataGrid>
+					<DockPanel HorizontalAlignment="Right">
+						<Label Content="Managed" HorizontalAlignment="Right" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Name="LblSecBeamsManaged" Content="{Binding ManagedBeams}" HorizontalAlignment="Right" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Content="Unmanaged" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Name="LblSecBeamsUnManaged" Content="{Binding UnManagedBeams}" HorizontalAlignment="Right" Margin="0,3,30,0" VerticalAlignment="Top"/>
+						<Button Name="BtnSecAddPart" Command="{Binding AddBeamsCommand}" BorderThickness="0" Content="Add" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF39F125"/>
+						<Button Name="BtnSecRemovePart" Command="{Binding RemoveBeamsCommand}" BorderThickness="0" Content="Remove" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FFF99883"/>
+						<Button Name="BtnSecRefreshBeams" Command="{Binding RefreshBeamsCommand}" BorderThickness="0" Content="Refresh" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF8CFAF8"/>
+					</DockPanel>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Secondary Beams">
+				<TabItem.DataContext>
+					<viewModels:SecondaryBeamsViewModel/>
+				</TabItem.DataContext>
+				<Grid>
+					<Label Content="Secondary Beams" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+					<DataGrid Name="DataGridSecondaryBeams" ItemsSource="{Binding BeamStateViews}" SelectedItem="{Binding SelectedBeamStateView}" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" HorizontalAlignment="Left" Margin="10,34,10,10" VerticalAlignment="Top" Width="Auto" FontSize="10" Opacity="0.8" RowHeight="22">
+						<i:Interaction.Behaviors>
+							<common:DataGridSelectedItemsBlendBehavior
+							SelectedItems="{Binding SelectedItems}" />
+						</i:Interaction.Behaviors>
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="CellEditEnding">
+								<ei:CallMethodAction TargetObject="{Binding}" MethodName="CellEditEnding"/>
+							</i:EventTrigger>
+							<i:EventTrigger EventName="SelectionChanged">
+								<ei:CallMethodAction TargetObject="{Binding}" MethodName="SelectMembersInModel"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</DataGrid>
+					<DockPanel HorizontalAlignment="Right">
+						<Label Content="Managed" HorizontalAlignment="Right" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Name="LblBeamsManaged" Content="{Binding ManagedBeams}" HorizontalAlignment="Right" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Content="Unmanaged" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Name="LblBeamsUnManaged" Content="{Binding UnManagedBeams}" HorizontalAlignment="Right" Margin="0,3,30,0" VerticalAlignment="Top"/>
+						<Button Name="BtnAddPart" Command="{Binding AddBeamsCommand}" BorderThickness="0" Content="Add" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF39F125"/>
+						<Button Name="BtnRemovePart" Command="{Binding RemoveBeamsCommand}" BorderThickness="0" Content="Remove" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FFF99883"/>
+						<Button Name="BtnRefreshBeams" Command="{Binding RefreshBeamsCommand}" BorderThickness="0" Content="Refresh" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF8CFAF8"/>
+					</DockPanel>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Component Beams">
+				<TabItem.DataContext>
+					<viewModels:ComponentBeamsViewModel/>
+				</TabItem.DataContext>
+				<Grid>
+					<Label Content="Component Beams" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+					<DataGrid Name="DataGridComponentBeams" ItemsSource="{Binding BeamStateViews}" SelectedItem="{Binding SelectedBeamStateView}" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" HorizontalAlignment="Left" Margin="10,34,10,10" VerticalAlignment="Top" Width="Auto" FontSize="10" Opacity="0.8" RowHeight="22">
+						<i:Interaction.Behaviors>
+							<common:DataGridSelectedItemsBlendBehavior
+							SelectedItems="{Binding SelectedItems}" />
+						</i:Interaction.Behaviors>
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="SelectionChanged">
+								<ei:CallMethodAction TargetObject="{Binding}" MethodName="SelectMembersInModel"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</DataGrid>
+					<DockPanel HorizontalAlignment="Right">
+						<Label Content="Managed" HorizontalAlignment="Right" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Name="LblCompBeamsManaged" Content="{Binding ManagedBeams}" HorizontalAlignment="Right" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Content="Unmanaged" Margin="0,3,0,0" VerticalAlignment="Top"/>
+						<Label Name="LblCompBeamsUnManaged" Content="{Binding UnManagedBeams}" HorizontalAlignment="Right" Margin="0,3,30,0" VerticalAlignment="Top"/>
+						<Button Name="BtnCompAddPart" Command="{Binding AddBeamsCommand}" BorderThickness="0" Content="Add" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF39F125"/>
+						<Button Name="BtnCompRemovePart" Command="{Binding RemoveBeamsCommand}" BorderThickness="0" Content="Remove" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FFF99883"/>
+						<Button Name="BtnCompRefreshBeams" Command="{Binding RefreshBeamsCommand}" BorderThickness="0" Content="Refresh" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF8CFAF8"/>
+					</DockPanel>
+				</Grid>
+			</TabItem>
+		</TabControl>
+	</Grid>
+</Window>
