@@ -9,6 +9,8 @@ namespace RazorCXProjectManager.Common
 	{
 		public static List<ModelObject> ToList(this ModelObjectEnumerator enumerator)
 		{
+			enumerator.SelectInstances = false;
+
 			var modelObjects = new List<ModelObject>();
 			while (enumerator.MoveNext())
 			{
@@ -32,17 +34,32 @@ namespace RazorCXProjectManager.Common
 				.Where(b => b.GetFatherComponent() == null)
 				.ToList();
 
+			var assemblyId = -1;
+			var partId = -1;
+			var result = new List<Beam>();
+
 			switch (partType)
 			{
 				case PartTypeEnum.MAIN_BEAMS:
-					return nonChildParts
-						.Where(b => b.GetAssembly().GetMainPart().Identifier.ID == b.Identifier.ID)
+					result = nonChildParts
+						.Where(b =>
+						{
+							b.GetReportProperty("ASSEMBLY.MAINPART.ID", ref assemblyId);
+							b.GetReportProperty("ID", ref partId);
+							return assemblyId == partId;
+						})
 						.ToList();
+					return result;
 				case PartTypeEnum.SECONDARY_BEAMS:
-					return nonChildParts
-						.Where(b => b.GetFatherComponent() == null)
-						.Where(b => b.GetAssembly().GetMainPart().Identifier.ID != b.Identifier.ID)
+					result = nonChildParts
+						.Where(b =>
+						{
+							b.GetReportProperty("ASSEMBLY.MAINPART.ID", ref assemblyId);
+							b.GetReportProperty("ID", ref partId);
+							return assemblyId != partId;
+						})
 						.ToList();
+					return result;
 				case PartTypeEnum.CONNECTION_BEAMS:
 					return childParts;
 

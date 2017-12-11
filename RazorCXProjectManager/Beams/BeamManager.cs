@@ -40,6 +40,8 @@ namespace RazorCXProjectManager.Beams
 		{
 			try
 			{
+				ModelObjectEnumerator.AutoFetch = true;
+
 				var modelObjects = _picker.PickObjects(Picker.PickObjectsEnum.PICK_N_OBJECTS).ToList();
 				if (modelObjects == null) return null;
 
@@ -51,24 +53,27 @@ namespace RazorCXProjectManager.Beams
 					.Where(m => filenames.FirstOrDefault(filename => filename.Contains(m.Identifier.GUID.ToString())) == null)
 					.ToList();
 
-				var beamStates = objs
+				var beams = objs
 					.OfType<Beam>()
-					.FilterForPartType(partType)
-					.Select(GetBeamState)
+					.FilterForPartType(partType).ToList();
+
+				var beamStates = beams.Select(GetBeamState)
 					.Where(b => b != null)
 					.ToList();
 
 				beamStates.ForEach(b =>
 				{
+					b.Beam.Select();
+
 					var beamSummary = new BeamSummary
 					{
-						GUID = b.Guid.ToString(),
+						GUID = b.Beam.Identifier.GUID.ToString(),
 						BeamStates = new List<BeamState> {b}
 					};
 
 					var json = JsonConvert.SerializeObject(beamSummary, Formatting.Indented);
 
-					WriteStates(json, Filepath(folderPath, b.Guid));
+					WriteStates(json, Filepath(folderPath, b.Beam.Identifier.GUID.ToString()));
 				});
 
 				var beamStateViews = JsonConvert.DeserializeObject<List<BeamStateView>>(JsonConvert.SerializeObject(beamStates))
@@ -100,7 +105,7 @@ namespace RazorCXProjectManager.Beams
 			{
 				var path = GetPath(partType);
 				var folderPath = FolderPath(path);
-				var filename = Filepath(folderPath, beam.Identifier.GUID);
+				var filename = Filepath(folderPath, beam.Identifier.GUID.ToString());
 				File.Delete(filename);
 
 			}
@@ -331,7 +336,7 @@ namespace RazorCXProjectManager.Beams
 			return modelpath + @"\" + folder;
 		}
 
-		private string Filepath(string path, Guid guid)
+		private string Filepath(string path, string guid)
 		{
 			var filename = $"{guid}.json";
 			return path + @"\" + filename;
@@ -339,25 +344,35 @@ namespace RazorCXProjectManager.Beams
 
 		public BeamState GetBeamState(Beam beam)
 		{
-			beam.GetPhase(out Phase phase);
+			var phaseNumber = -1;
+			beam.GetReportProperty("PHASE", ref phaseNumber);
 
 			var topLevel = string.Empty;
 			beam.GetReportProperty("TOP_LEVEL", ref topLevel);
+
+			var partMark = string.Empty;
+			beam.GetReportProperty("PART_POS", ref partMark);
+
+			var profile = string.Empty;
+			beam.GetReportProperty("PROFILE", ref profile);
+
+			var material = string.Empty;
+			beam.GetReportProperty("MATERIAL", ref material);
 
 			return new BeamState()
 			{
 				Id = beam.Identifier.ID,
 				Guid = beam.Identifier.GUID,
 				Beam = beam,
-				Phase = phase.PhaseNumber,
+				Phase = phaseNumber,
 				Name = beam.Name,
-				Profile = beam.Profile.ProfileString,
-				Material = beam.Material.MaterialString,
+				Profile = profile,
+				Material = material,
 				Finish = beam.Finish,
 				Class = beam.Class,
 				Date = DateTime.Now,
 				TopLevel = topLevel,
-				PartMark = beam.GetPartMark(),
+				PartMark = partMark,
 			};
 		}
 
@@ -425,7 +440,7 @@ namespace RazorCXProjectManager.Beams
 			{
 				var path = GetPath(partType);
 				var folderPath = FolderPath(path);
-				var filePath = Filepath(folderPath, beamState.Guid);
+				var filePath = Filepath(folderPath, beamState.Guid.ToString());
 				var file = string.Empty;
 
 				using (var reader = new StreamReader(filePath))
