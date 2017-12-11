@@ -107,6 +107,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Beams\BeamCompare.cs" />
+    <Compile Include="OpenShopDrawing.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\ComponentBeamsViewModel.cs" />
     <Compile Include="ViewModels\ConnectionsViewModel.cs" />

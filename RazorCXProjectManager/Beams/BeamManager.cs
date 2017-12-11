@@ -96,18 +96,23 @@ namespace RazorCXProjectManager.Beams
 
 		public void RemoveBeam(Beam beam, PartTypeEnum partType)
 		{
-			var path = GetPath(partType);
-			var folderPath = FolderPath(path);
-			var filename = Filepath(folderPath, beam.Identifier.GUID);
-			File.Delete(filename);
+			try
+			{
+				var path = GetPath(partType);
+				var folderPath = FolderPath(path);
+				var filename = Filepath(folderPath, beam.Identifier.GUID);
+				File.Delete(filename);
+
+			}
+			catch (Exception e)
+			{
+			}
 		}
 
-		public List<BeamStateView> BeamStateViews(PartTypeEnum partType)
+		public List<BeamStateView> BeamStateViews(ILookup<Guid, Beam> beamsLookup, PartTypeEnum partType)
 		{
 			var beamSummaries = GetBeamSummaries(partType);
 			var beamStates = BeamStates(beamSummaries);
-
-			var beamsLookup = ModelHelper.GetAllBeams().ToLookup(b => b.Identifier.GUID);
 
 			//compare
 			var revised = new List<int>();

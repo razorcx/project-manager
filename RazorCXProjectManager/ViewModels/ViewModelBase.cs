@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using Newtonsoft.Json;
 using RazorCXProjectManager.Beams;
 using RazorCXProjectManager.Common;
+using Tekla.Structures.Model;
+using Task = System.Threading.Tasks.Task;
 
 namespace RazorCXProjectManager.ViewModels
 {
 	public abstract class ViewModelBase : ObservableObject
 	{
+		private ILookup<Guid, Beam> _beamsLookup;
+
 		private string _managedBeams;
 		public string ManagedBeams
 		{
@@ -69,12 +73,18 @@ namespace RazorCXProjectManager.ViewModels
 
 		protected ViewModelBase()
 		{
+			_beamsLookup = GetBeamsLookup();
 			SelectedItems = new ObservableCollection<object>();
 		}
 
 		public void InitializeBeamStateViews(PartTypeEnum partType)
 		{
-			BeamStateViews = new ObservableCollection<BeamStateView>(BeamManager.BeamStateViews(partType));
+			BeamStateViews = new ObservableCollection<BeamStateView>(BeamManager.BeamStateViews(_beamsLookup, partType));
+		}
+
+		public ILookup<Guid, Beam> GetBeamsLookup()
+		{
+			return ModelHelper.GetAllBeams().ToLookup(b => b.Identifier.GUID);
 		}
 
 		public void AddBeams(PartTypeEnum partType)
@@ -100,7 +110,8 @@ namespace RazorCXProjectManager.ViewModels
 
 		public void RefreshBeams(PartTypeEnum partType)
 		{
-			var newViews = BeamManager.BeamStateViews(partType).ToList();
+			_beamsLookup = GetBeamsLookup();
+			var newViews = BeamManager.BeamStateViews(_beamsLookup, partType).ToList();
 			BeamStateViews = new ObservableCollection<BeamStateView>(newViews);
 			UpdateManagedBeams(partType);
 		}
@@ -120,7 +131,7 @@ namespace RazorCXProjectManager.ViewModels
 			Task.Run(() =>
 			{
 				ManagedBeams = BeamStateViews.Count.ToString();
-				UnManagedBeams = (BeamManager.GetBeams(partType).Count - BeamStateViews.Count).ToString();
+				//UnManagedBeams = (BeamManager.GetBeams(partType).Count - BeamStateViews.Count).ToString();
 			});
 		}
 
@@ -159,6 +170,12 @@ namespace RazorCXProjectManager.ViewModels
 
 				var success = BeamManager.UpdateJsonFile(newState, partType);
 			}
+		}
+
+		public void OpenDrawing(PartTypeEnum partType)
+		{
+			var part = ModelHelper.SelectModelObject(((BeamStateView)SelectedItems[0]).Id) as Part;
+			new OpenShopDrawing().Open(part);
 		}
 	}
 }

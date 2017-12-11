@@ -18,7 +18,6 @@ namespace RazorCXProjectManager
 				DataGridMainBeams.CanUserAddRows = false;
 				DataGridSecondaryBeams.CanUserAddRows = false;
 				DataGridComponentBeams.CanUserAddRows = false;
-
 			}
 			catch (Exception ex)
 			{

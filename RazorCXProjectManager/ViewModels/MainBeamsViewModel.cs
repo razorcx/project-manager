@@ -2,6 +2,8 @@
 using System.Windows.Input;
 using RazorCXProjectManager.Beams;
 using RazorCXProjectManager.Common;
+using Tekla.Structures;
+using Tekla.Structures.Model;
 
 namespace RazorCXProjectManager.ViewModels
 {
@@ -36,6 +38,12 @@ namespace RazorCXProjectManager.ViewModels
 		private void RefreshBeams()
 		{
 			base.RefreshBeams(PartType);
+		}
+
+		public ICommand OpenDrawingCommand => new DelegateCommand(OpenDrawing);
+		private void OpenDrawing()
+		{
+			base.OpenDrawing(PartType);
 		}
 	}
 }

@@ -9,7 +9,7 @@
         xmlns:viewModels="clr-namespace:RazorCXProjectManager.ViewModels"
         xmlns:common="clr-namespace:RazorCXProjectManager.Common"
         mc:Ignorable="d"
-        Title="Project Manager" Width="1000" Topmost="False" Icon="Resources/RazorCX-Logo-96x96.png">
+        Title="Project Manager" Width="1000" Topmost="True" Icon="Resources/RazorCX-Logo-96x96.png">
 	<Window.Resources>
 	</Window.Resources>
 	<Grid>
@@ -64,6 +64,7 @@
 						<Button Name="BtnSecAddPart" Command="{Binding AddBeamsCommand}" BorderThickness="0" Content="Add" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF39F125"/>
 						<Button Name="BtnSecRemovePart" Command="{Binding RemoveBeamsCommand}" BorderThickness="0" Content="Remove" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FFF99883"/>
 						<Button Name="BtnSecRefreshBeams" Command="{Binding RefreshBeamsCommand}" BorderThickness="0" Content="Refresh" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF8CFAF8"/>
+						<Button Name="BtnSecOpenDrawing" Command="{Binding OpenDrawingCommand}" BorderThickness="0" Content="Open Drawing" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="Auto" Height="23" Padding="10,0" Background="LightBlue"/>
 					</DockPanel>
 				</Grid>
 			</TabItem>
@@ -95,6 +96,7 @@
 						<Button Name="BtnAddPart" Command="{Binding AddBeamsCommand}" BorderThickness="0" Content="Add" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF39F125"/>
 						<Button Name="BtnRemovePart" Command="{Binding RemoveBeamsCommand}" BorderThickness="0" Content="Remove" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FFF99883"/>
 						<Button Name="BtnRefreshBeams" Command="{Binding RefreshBeamsCommand}" BorderThickness="0" Content="Refresh" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF8CFAF8"/>
+						<Button Name="BtnOpenDrawing" Command="{Binding OpenDrawingCommand}" BorderThickness="0" Content="Open Drawing" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="Auto" Height="23" Padding="10,0" Background="LightBlue"/>
 					</DockPanel>
 				</Grid>
 			</TabItem>
@@ -123,6 +125,7 @@
 						<Button Name="BtnCompAddPart" Command="{Binding AddBeamsCommand}" BorderThickness="0" Content="Add" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF39F125"/>
 						<Button Name="BtnCompRemovePart" Command="{Binding RemoveBeamsCommand}" BorderThickness="0" Content="Remove" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FFF99883"/>
 						<Button Name="BtnCompRefreshBeams" Command="{Binding RefreshBeamsCommand}" BorderThickness="0" Content="Refresh" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="75" Height="23" Background="#FF8CFAF8"/>
+						<Button Name="BtnCompOpenDrawing" Command="{Binding OpenDrawingCommand}" BorderThickness="0" Content="Open Drawing" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Width="Auto" Height="23" Padding="10,0" Background="LightBlue"/>
 					</DockPanel>
 				</Grid>
 			</TabItem>

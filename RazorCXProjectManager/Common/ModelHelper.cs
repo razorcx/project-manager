@@ -48,5 +48,10 @@ namespace RazorCXProjectManager.Common
 				.OfType<Beam>()
 				.ToList();
 		}
+
+		public static ModelObject SelectModelObject(int id)
+		{
+			return Model.SelectModelObject(new Identifier(id));
+		}
 	}
 }
